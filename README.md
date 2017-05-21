@@ -1,6 +1,6 @@
-# sell
+# Vue.js高仿饿了么外卖APP
 
-> sell app(Vue.js高仿饿了么外卖APP)
+> sell
 
 ## Build Setup
 
