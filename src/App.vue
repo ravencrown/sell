@@ -14,7 +14,7 @@
     </div>
 
     <!-- 路由外链 -->
-    <router-view></router-view>
+    <router-view :seller="seller"></router-view>
     <!-- <div class="content">
 I am content
 </div> -->
