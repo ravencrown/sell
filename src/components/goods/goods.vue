@@ -15,7 +15,7 @@
                 <li v-for="item in goods" class="food-list food-list-hook">
                     <h1 class="title">{{ item.name }}</h1>
                     <ul>
-                        <li v-for="food in item.foods" class="food-item border-1px">
+                        <li @click="selectFood(food, $event)" v-for="food in item.foods" class="food-item border-1px">
                             <div class="icon">
                                 <img width:="57" height="57" :src="food.icon" alt="">
                             </div>
@@ -40,6 +40,8 @@
             </ul>
         </div>
         <shopcart v-ref:shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+        <!-- 调用子组件food方法, 通过v-ref -->
+        <food :food="selectedFood" v-ref:food></food>
     </div>
 
 </template>
@@ -48,6 +50,7 @@
 import BScroll from 'better-scroll';
 import shopcart from 'components/shopcart/shopcart';
 import cartcontrol from 'components/cartcontrol/cartcontrol';
+import food from 'components/food/food';
 const ERR_OK = 0;
 
 export default {
@@ -61,7 +64,8 @@ export default {
         return {
             goods: [],
             listHeight: [],
-            scrollY: 0
+            scrollY: 0,
+            selectedFood: {}
         };
     },
     computed: {
@@ -116,6 +120,7 @@ export default {
             let el = foodList[index];
             this.foodsScroll.scrollToElement(el, 0.3 * 1000);
         },
+        // 方法命名规则：内部调用的带下划线，可以被外部调用的用驼峰命名
         _drop(target) {
             // 体验优化，异步执行下落动画
             this.$nextTick(() => {
@@ -146,11 +151,20 @@ export default {
                 height += item.clientHeight;
                 this.listHeight.push(height);
             }
+        },
+        selectFood(food, event) {
+            if (!event._constructed) {
+                return;
+            }
+            this.selectedFood = food;
+            // 调用子组件方法
+            this.$refs.food.show();
         }
     },
     components: {
         shopcart,
-        cartcontrol
+        cartcontrol,
+        food
     },
     events: {
         'cart:add'(target) {
